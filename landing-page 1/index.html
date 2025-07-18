@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS - O Futuro da Tecnologia</title>
+    <meta name="description" content="Uma experiência revolucionária que redefine o que é possível na web. Tecnologia de ponta, efeitos 3D e interações únicas.">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    
+    <!-- GSAP para animações avançadas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <!-- Particles.js -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    
+    <!-- Howler.js para áudio -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
+    
+    <!-- Estilos -->
+    <link rel="stylesheet" href="src/css/style.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-logo">
+                <div class="nexus-logo">
+                    <span>N</span>
+                    <span>E</span>
+                    <span>X</span>
+                    <span>U</span>
+                    <span>S</span>
+                </div>
+            </div>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+            <div class="loading-text">Inicializando sistemas...</div>
+        </div>
+    </div>
+
+    <!-- Cursor personalizado -->
+    <div class="custom-cursor"></div>
+    <div class="custom-cursor-follower"></div>
+
+    <!-- Canvas 3D Background -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Particles Container -->
+    <div id="particles-js"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <div class="logo-text">NEXUS</div>
+                    <div class="logo-subtitle">FUTURE TECH</div>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#home" class="nav-link" data-section="home">
+                            <span class="nav-icon"><i class="fas fa-home"></i></span>
+                            <span class="nav-text">Início</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#experience" class="nav-link" data-section="experience">
+                            <span class="nav-icon"><i class="fas fa-cube"></i></span>
+                            <span class="nav-text">Experiência</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#innovation" class="nav-link" data-section="innovation">
+                            <span class="nav-icon"><i class="fas fa-rocket"></i></span>
+                            <span class="nav-text">Inovação</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#contact" class="nav-link" data-section="contact">
+                            <span class="nav-icon"><i class="fas fa-comments"></i></span>
+                            <span class="nav-text">Contato</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="nav-controls">
+                    <button class="control-btn" id="toggle-sound">
+                        <i class="fas fa-volume-up"></i>
+                    </button>
+                    <button class="control-btn" id="toggle-3d">
+                        <i class="fas fa-cube"></i>
+                    </button>
+                    <button class="control-btn" id="toggle-particles">
+                        <i class="fas fa-atom"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="hero-title">
+                    <h1 class="glitch-text" data-text="NEXUS">NEXUS</h1>
+                    <div class="hero-subtitle">
+                        <span class="typewriter">O Futuro da Tecnologia</span>
+                    </div>
+                </div>
+                <div class="hero-description">
+                    <p>Uma experiência revolucionária que redefine os limites do possível. 
+                    Tecnologia de ponta, efeitos 3D imersivos e interações que desafiam a realidade.</p>
+                </div>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary" id="start-experience">
+                        <span class="btn-text">Iniciar Experiência</span>
+                        <span class="btn-icon"><i class="fas fa-play"></i></span>
+                    </button>
+                    <button class="btn btn-secondary" id="explore-3d">
+                        <span class="btn-text">Explorar 3D</span>
+                        <span class="btn-icon"><i class="fas fa-cube"></i></span>
+                    </button>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="floating-elements">
+                    <div class="floating-element" data-speed="2">
+                        <i class="fas fa-microchip"></i>
+                    </div>
+                    <div class="floating-element" data-speed="1.5">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <div class="floating-element" data-speed="3">
+                        <i class="fas fa-dna"></i>
+                    </div>
+                    <div class="floating-element" data-speed="2.5">
+                        <i class="fas fa-quantum"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id="experience" class="experience">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Experiência Imersiva</h2>
+                <p class="section-description">Interaja com elementos 3D e descubra novas possibilidades</p>
+            </div>
+            <div class="experience-grid">
+                <div class="experience-card" data-effect="3d-tilt">
+                    <div class="card-content">
+                        <div class="card-icon">
+                            <i class="fas fa-vr-cardboard"></i>
+                        </div>
+                        <h3>Realidade Virtual</h3>
+                        <p>Mergulhe em mundos digitais com tecnologia VR de última geração</p>
+                        <div class="card-interaction">
+                            <button class="interaction-btn" data-action="vr-demo">
+                                <i class="fas fa-play"></i>
+                                Demo VR
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="experience-card" data-effect="3d-tilt">
+                    <div class="card-content">
+                        <div class="card-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h3>Inteligência Artificial</h3>
+                        <p>Algoritmos avançados que aprendem e evoluem continuamente</p>
+                        <div class="card-interaction">
+                            <button class="interaction-btn" data-action="ai-chat">
+                                <i class="fas fa-comments"></i>
+                                Chat IA
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="experience-card" data-effect="3d-tilt">
+                    <div class="card-content">
+                        <div class="card-icon">
+                            <i class="fas fa-quantum"></i>
+                        </div>
+                        <h3>Computação Quântica</h3>
+                        <p>Processamento quântico que resolve problemas impossíveis</p>
+                        <div class="card-interaction">
+                            <button class="interaction-btn" data-action="quantum-sim">
+                                <i class="fas fa-atom"></i>
+                                Simulador
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Innovation Section -->
+    <section id="innovation" class="innovation">
+        <div class="container">
+            <div class="innovation-content">
+                <div class="innovation-text">
+                    <h2>Inovação Sem Limites</h2>
+                    <p>Nossa tecnologia transcende os limites convencionais, criando experiências que antes só existiam na ficção científica.</p>
+                    <div class="innovation-stats">
+                        <div class="stat-item">
+                            <div class="stat-number" data-target="99.9">0</div>
+                            <div class="stat-label">Precisão</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" data-target="1000">0</div>
+                            <div class="stat-label">FPS</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" data-target="360">0</div>
+                            <div class="stat-label">Graus</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="innovation-visual">
+                    <div class="hologram-container">
+                        <div class="hologram">
+                            <div class="hologram-layer layer-1"></div>
+                            <div class="hologram-layer layer-2"></div>
+                            <div class="hologram-layer layer-3"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Demo Section -->
+    <section id="demo" class="demo">
+        <div class="container">
+            <div class="demo-header">
+                <h2>Demonstração Interativa</h2>
+                <p>Use seu mouse, teclado ou toque para interagir</p>
+            </div>
+            <div class="demo-area">
+                <div class="demo-controls">
+                    <button class="demo-btn" data-demo="particles">Partículas</button>
+                    <button class="demo-btn" data-demo="waves">Ondas</button>
+                    <button class="demo-btn" data-demo="gravity">Gravidade</button>
+                    <button class="demo-btn" data-demo="magnetic">Magnético</button>
+                </div>
+                <div class="demo-canvas-container">
+                    <canvas id="demo-canvas"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h2>Entre no Futuro</h2>
+                    <p>Pronto para experimentar o que há de mais avançado em tecnologia?</p>
+                    <div class="contact-methods">
+                        <div class="contact-method">
+                            <i class="fas fa-envelope"></i>
+                            <span>nexus@future.tech</span>
+                        </div>
+                        <div class="contact-method">
+                            <i class="fas fa-phone"></i>
+                            <span>+1 (555) NEXUS-01</span>
+                        </div>
+                        <div class="contact-method">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Silicon Valley, CA</span>
+                        </div>
+                    </div>
+                </div>
+                <form class="contact-form" id="contact-form">
+                    <div class="form-group">
+                        <input type="text" id="name" required>
+                        <label for="name">Seu Nome</label>
+                        <div class="form-line"></div>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="email" required>
+                        <label for="email">Seu Email</label>
+                        <div class="form-line"></div>
+                    </div>
+                    <div class="form-group">
+                        <textarea id="message" rows="5" required></textarea>
+                        <label for="message">Sua Mensagem</label>
+                        <div class="form-line"></div>
+                    </div>
+                    <button type="submit" class="submit-btn">
+                        <span class="btn-text">Enviar Mensagem</span>
+                        <span class="btn-icon"><i class="fas fa-paper-plane"></i></span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Audio Elements -->
+    <audio id="hover-sound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmGgU7k9n1unEiBC13yO/eizEIHWq+8+OWT" type="audio/wav">
+    </audio>
+    <audio id="click-sound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmGgU7k9n1unEiBC13yO/eizEIHWq+8+OWT" type="audio/wav">
+    </audio>
+
+    <!-- Scripts -->
+    <script src="src/js/script.js"></script>
+</body>
+</html> 
+</body>
+</html> 

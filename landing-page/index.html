@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KEYEA - Multiverso Interdimensional</title>
+    <meta name="description" content="Cada clique é um portal para uma dimensão diferente. Experiência única que transcende a realidade.">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <!-- Particles.js -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    
+    <!-- Howler.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
+    
+    <!-- MediaPipe -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+    
+    <!-- TensorFlow.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+    
+    <!-- Estilos -->
+    <link rel="stylesheet" href="src/css/style.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-logo">
+                <div class="keyea-logo">
+                    <span>K</span>
+                    <span>E</span>
+                    <span>Y</span>
+                    <span>E</span>
+                    <span>A</span>
+                </div>
+            </div>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+            <div class="loading-text">Inicializando multiverso...</div>
+        </div>
+    </div>
+
+    <!-- Cursor personalizado -->
+    <div class="custom-cursor"></div>
+    <div class="custom-cursor-follower"></div>
+
+    <!-- Canvas 3D Background -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Particles Container -->
+    <div id="particles-js"></div>
+
+    <!-- Camera Feed -->
+    <div class="camera-container">
+        <video id="camera-feed" autoplay muted></video>
+        <canvas id="hand-detection-canvas"></canvas>
+        <div class="camera-overlay">
+            <div class="gesture-info">
+                <span class="gesture-text">Portal Ativo</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- HUD Holográfico -->
+    <div class="hud-overlay">
+        <div class="hud-corner top-left">
+            <div class="hud-element">
+                <i class="fas fa-universe"></i>
+                <span>DIMENSÃO ATIVA</span>
+            </div>
+        </div>
+        <div class="hud-corner top-right">
+            <div class="hud-element">
+                <i class="fas fa-portal"></i>
+                <span>PORTAL PRÓXIMO</span>
+            </div>
+        </div>
+        <div class="hud-corner bottom-left">
+            <div class="hud-element">
+                <i class="fas fa-brain"></i>
+                <span>IA MULTIDIMENSIONAL</span>
+            </div>
+        </div>
+        <div class="hud-corner bottom-right">
+            <div class="hud-element">
+                <i class="fas fa-cube"></i>
+                <span>RENDER 4D</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <div class="logo-text">KEYEA</div>
+                    <div class="logo-subtitle">MULTIVERSO</div>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#nexus" class="nav-link" data-section="nexus">
+                            <span class="nav-icon"><i class="fas fa-home"></i></span>
+                            <span class="nav-text">Nexus</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#dimensions" class="nav-link" data-section="dimensions">
+                            <span class="nav-icon"><i class="fas fa-universe"></i></span>
+                            <span class="nav-text">Dimensões</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#portals" class="nav-link" data-section="portals">
+                            <span class="nav-icon"><i class="fas fa-portal"></i></span>
+                            <span class="nav-text">Portais</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#contact" class="nav-link" data-section="contact">
+                            <span class="nav-icon"><i class="fas fa-comments"></i></span>
+                            <span class="nav-text">Contato</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="nav-controls">
+                    <button class="control-btn" id="toggle-camera">
+                        <i class="fas fa-camera"></i>
+                    </button>
+                    <button class="control-btn" id="toggle-sound">
+                        <i class="fas fa-volume-up"></i>
+                    </button>
+                    <button class="control-btn" id="toggle-4d">
+                        <i class="fas fa-cube"></i>
+                    </button>
+                    <button class="control-btn" id="toggle-portals">
+                        <i class="fas fa-portal"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Nexus Section (Main Hub) -->
+    <section id="nexus" class="nexus">
+        <div class="nexus-container">
+            <div class="nexus-content">
+                <div class="nexus-title">
+                    <h1 class="glitch-text" data-text="KEYEA">KEYEA</h1>
+                    <div class="nexus-subtitle">
+                        <span class="typewriter">Multiverso Interdimensional</span>
+                    </div>
+                </div>
+                <div class="nexus-description">
+                    <p>Cada clique é um portal para uma dimensão diferente. 
+                    Explore realidades paralelas, dimensões quânticas e universos alternativos.</p>
+                </div>
+                <div class="nexus-buttons">
+                    <button class="btn btn-primary" id="activate-portals">
+                        <span class="btn-text">Ativar Portais</span>
+                        <span class="btn-icon"><i class="fas fa-portal"></i></span>
+                    </button>
+                    <button class="btn btn-secondary" id="random-dimension">
+                        <span class="btn-text">Dimensão Aleatória</span>
+                        <span class="btn-icon"><i class="fas fa-dice"></i></span>
+                    </button>
+                </div>
+            </div>
+            <div class="nexus-visual">
+                <div class="floating-elements">
+                    <div class="floating-element" data-speed="2">
+                        <i class="fas fa-universe"></i>
+                    </div>
+                    <div class="floating-element" data-speed="1.5">
+                        <i class="fas fa-portal"></i>
+                    </div>
+                    <div class="floating-element" data-speed="3">
+                        <i class="fas fa-atom"></i>
+                    </div>
+                    <div class="floating-element" data-speed="2.5">
+                        <i class="fas fa-quantum"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dimensions Grid -->
+    <section id="dimensions" class="dimensions">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Dimensões Disponíveis</h2>
+                <p class="section-description">Clique em qualquer área para entrar em uma dimensão única</p>
+            </div>
+            <div class="dimensions-grid">
+                <!-- Dimensão Quântica -->
+                <div class="dimension-zone quantum-zone" data-dimension="quantum">
+                    <div class="zone-content">
+                        <h3>Dimensão Quântica</h3>
+                        <p>Partículas que existem em múltiplos estados simultaneamente</p>
+                        <div class="zone-preview">
+                            <i class="fas fa-atom"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dimensão Holográfica -->
+                <div class="dimension-zone hologram-zone" data-dimension="hologram">
+                    <div class="zone-content">
+                        <h3>Dimensão Holográfica</h3>
+                        <p>Realidade projetada em múltiplas dimensões</p>
+                        <div class="zone-preview">
+                            <i class="fas fa-hologram"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dimensão Temporal -->
+                <div class="dimension-zone time-zone" data-dimension="time">
+                    <div class="zone-content">
+                        <h3>Dimensão Temporal</h3>
+                        <p>Onde passado, presente e futuro se misturam</p>
+                        <div class="zone-preview">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dimensão Neural -->
+                <div class="dimension-zone neural-zone" data-dimension="neural">
+                    <div class="zone-content">
+                        <h3>Dimensão Neural</h3>
+                        <p>Rede de consciências interconectadas</p>
+                        <div class="zone-preview">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dimensão Cósmica -->
+                <div class="dimension-zone cosmic-zone" data-dimension="cosmic">
+                    <div class="zone-content">
+                        <h3>Dimensão Cósmica</h3>
+                        <p>Galáxias em formação e buracos negros</p>
+                        <div class="zone-preview">
+                            <i class="fas fa-galaxy"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dimensão Digital -->
+                <div class="dimension-zone digital-zone" data-dimension="digital">
+                    <div class="zone-content">
+                        <h3>Dimensão Digital</h3>
+                        <p>Mundo de código e algoritmos vivos</p>
+                        <div class="zone-preview">
+                            <i class="fas fa-code"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dimensão Elemental -->
+                <div class="dimension-zone elemental-zone" data-dimension="elemental">
+                    <div class="zone-content">
+                        <h3>Dimensão Elemental</h3>
+                        <p>Fogo, água, terra e ar em harmonia</p>
+                        <div class="zone-preview">
+                            <i class="fas fa-fire"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dimensão Sonora -->
+                <div class="dimension-zone sound-zone" data-dimension="sound">
+                    <div class="zone-content">
+                        <h3>Dimensão Sonora</h3>
+                        <p>Ondas sonoras visíveis e tangíveis</p>
+                        <div class="zone-preview">
+                            <i class="fas fa-music"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portals Section -->
+    <section id="portals" class="portals">
+        <div class="container">
+            <div class="portals-content">
+                <div class="portals-text">
+                    <h2>Sistema de Portais</h2>
+                    <p>Navegue entre dimensões usando portais interativos. Cada portal é único e oferece uma experiência diferente.</p>
+                    <div class="portal-stats">
+                        <div class="stat-item">
+                            <div class="stat-number" data-target="8">0</div>
+                            <div class="stat-label">Dimensões</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" data-target="∞">0</div>
+                            <div class="stat-label">Possibilidades</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" data-target="100">0</div>
+                            <div class="stat-label">Portais</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="portals-visual">
+                    <div class="portal-ring">
+                        <div class="ring-layer layer-1"></div>
+                        <div class="ring-layer layer-2"></div>
+                        <div class="ring-layer layer-3"></div>
+                        <div class="portal-core">
+                            <i class="fas fa-portal"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Demo Section -->
+    <section id="demo" class="demo">
+        <div class="container">
+            <div class="demo-header">
+                <h2>Demonstração Interativa</h2>
+                <p>Clique em qualquer lugar para ativar portais dimensionais</p>
+            </div>
+            <div class="demo-area">
+                <div class="demo-controls">
+                    <button class="demo-btn" data-demo="quantum">Quântico</button>
+                    <button class="demo-btn" data-demo="hologram">Holográfico</button>
+                    <button class="demo-btn" data-demo="temporal">Temporal</button>
+                    <button class="demo-btn" data-demo="neural">Neural</button>
+                </div>
+                <div class="demo-canvas-container">
+                    <canvas id="demo-canvas"></canvas>
+                    <div class="portal-feedback">
+                        <div class="portal-indicator">
+                            <i class="fas fa-portal"></i>
+                            <span>Portal Ativo</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h2>Entre no Multiverso</h2>
+                    <p>Pronto para explorar dimensões infinitas?</p>
+                    <div class="contact-methods">
+                        <div class="contact-method">
+                            <i class="fas fa-envelope"></i>
+                            <span>keyea@multiverse.tech</span>
+                        </div>
+                        <div class="contact-method">
+                            <i class="fas fa-phone"></i>
+                            <span>+1 (555) KEYEA-∞</span>
+                        </div>
+                        <div class="contact-method">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Multiverso Central</span>
+                        </div>
+                    </div>
+                </div>
+                <form class="contact-form" id="contact-form">
+                    <div class="form-group">
+                        <input type="text" id="name" required>
+                        <label for="name">Seu Nome</label>
+                        <div class="form-line"></div>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="email" required>
+                        <label for="email">Seu Email</label>
+                        <div class="form-line"></div>
+                    </div>
+                    <div class="form-group">
+                        <textarea id="message" rows="5" required></textarea>
+                        <label for="message">Sua Mensagem</label>
+                        <div class="form-line"></div>
+                    </div>
+                    <button type="submit" class="submit-btn">
+                        <span class="btn-text">Enviar Mensagem</span>
+                        <span class="btn-icon"><i class="fas fa-paper-plane"></i></span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dimension Overlays -->
+    <div id="dimension-overlays">
+        <!-- Quantum Dimension -->
+        <div class="dimension-overlay quantum-overlay" data-dimension="quantum">
+            <div class="overlay-content">
+                <h2>Dimensão Quântica</h2>
+                <p>Bem-vindo ao reino das probabilidades infinitas</p>
+                <div class="quantum-particles"></div>
+                <button class="close-dimension">Voltar ao Nexus</button>
+            </div>
+        </div>
+
+        <!-- Hologram Dimension -->
+        <div class="dimension-overlay hologram-overlay" data-dimension="hologram">
+            <div class="overlay-content">
+                <h2>Dimensão Holográfica</h2>
+                <p>Realidade projetada em múltiplas camadas</p>
+                <div class="hologram-layers"></div>
+                <button class="close-dimension">Voltar ao Nexus</button>
+            </div>
+        </div>
+
+        <!-- Time Dimension -->
+        <div class="dimension-overlay time-overlay" data-dimension="time">
+            <div class="overlay-content">
+                <h2>Dimensão Temporal</h2>
+                <p>Onde o tempo é fluido e maleável</p>
+                <div class="time-streams"></div>
+                <button class="close-dimension">Voltar ao Nexus</button>
+            </div>
+        </div>
+
+        <!-- Neural Dimension -->
+        <div class="dimension-overlay neural-overlay" data-dimension="neural">
+            <div class="overlay-content">
+                <h2>Dimensão Neural</h2>
+                <p>Rede de consciências interconectadas</p>
+                <div class="neural-network"></div>
+                <button class="close-dimension">Voltar ao Nexus</button>
+            </div>
+        </div>
+
+        <!-- Cosmic Dimension -->
+        <div class="dimension-overlay cosmic-overlay" data-dimension="cosmic">
+            <div class="overlay-content">
+                <h2>Dimensão Cósmica</h2>
+                <p>Galáxias em formação e buracos negros</p>
+                <div class="cosmic-space"></div>
+                <button class="close-dimension">Voltar ao Nexus</button>
+            </div>
+        </div>
+
+        <!-- Digital Dimension -->
+        <div class="dimension-overlay digital-overlay" data-dimension="digital">
+            <div class="overlay-content">
+                <h2>Dimensão Digital</h2>
+                <p>Mundo de código e algoritmos vivos</p>
+                <div class="digital-matrix"></div>
+                <button class="close-dimension">Voltar ao Nexus</button>
+            </div>
+        </div>
+
+        <!-- Elemental Dimension -->
+        <div class="dimension-overlay elemental-overlay" data-dimension="elemental">
+            <div class="overlay-content">
+                <h2>Dimensão Elemental</h2>
+                <p>Fogo, água, terra e ar em harmonia</p>
+                <div class="elemental-sphere"></div>
+                <button class="close-dimension">Voltar ao Nexus</button>
+            </div>
+        </div>
+
+        <!-- Sound Dimension -->
+        <div class="dimension-overlay sound-overlay" data-dimension="sound">
+            <div class="overlay-content">
+                <h2>Dimensão Sonora</h2>
+                <p>Ondas sonoras visíveis e tangíveis</p>
+                <div class="sound-waves"></div>
+                <button class="close-dimension">Voltar ao Nexus</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio Elements -->
+    <audio id="hover-sound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmGgU7k9n1unEiBC13yO/eizEIHWq+8+OWT" type="audio/wav">
+    </audio>
+    <audio id="click-sound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmGgU7k9n1unEiBC13yO/eizEIHWq+8+OWT" type="audio/wav">
+    </audio>
+    <audio id="portal-sound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmGgU7k9n1unEiBC13yO/eizEIHWq+8+OWT" type="audio/wav">
+    </audio>
+
+    <!-- Scripts -->
+    <script src="src/js/script.js"></script>
+</body>
+</html> 
